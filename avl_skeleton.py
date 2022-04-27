@@ -753,8 +753,8 @@ class AVLTreeList(object):
             child.setParent(node.getParent())
             child.getParent().setProperChild(tree_list, child, node)
             node.setParent(child)
-            node.setSize(max(0, node.getRight().getSize()) + max(0, node.getLeft().getSize()))
-            child.setSize(max(0, child.getRight().getSize()) + max(0, child.getLeft().getSize()))
+            node.setSize(node.getRight().getSize() + node.getLeft().getSize() + 2)
+            child.setSize(child.getRight().getSize() + child.getLeft().getSize() + 2)
             AVLTreeList.fixHeight(node)
             return 1
 
@@ -765,8 +765,8 @@ class AVLTreeList(object):
             child.setParent(node.getParent())
             child.getParent().setProperChild(tree_list, child, node)
             node.setParent(child)
-            node.setSize(max(0, node.getRight().getSize()) + max(0, node.getLeft().getSize()))
-            child.setSize(max(0, child.getRight().getSize()) + max(0, child.getLeft().getSize()))
+            node.setSize(node.getRight().getSize() + node.getLeft().getSize() + 2)
+            child.setSize(child.getRight().getSize() + child.getLeft().getSize() + 2)
             AVLTreeList.fixHeight(node)
             return 1
 
