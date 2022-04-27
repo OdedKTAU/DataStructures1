@@ -590,11 +590,11 @@ class AVLTreeList(object):
         elif rank < counter:
             if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
                 some_root.setHeight(some_root.getHeight() + 1)
-            return AVLTreeList.treeSelect(some_root.getLeft(), rank)
+            return AVLTreeList.treeSelectInsert(some_root.getLeft(), rank)
         else:
             if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
                 some_root.setHeight(some_root.getHeight() + 1)
-            return AVLTreeList.treeSelect(some_root.getRight(), rank - counter)
+            return AVLTreeList.treeSelectInsert(some_root.getRight(), rank - counter - 1)
 
     """returns the predecessor of a node in the tree
 
