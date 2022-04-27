@@ -227,7 +227,7 @@ class AVLTreeList(object):
 	"""
 
     def retrieve(self, i):
-        return AVLTreeList.treeSelect(self.root, i - 1).getValue()
+        return AVLTreeList.treeSelect(self.root, i).getValue()
 
     """inserts val at position i in the list
 
@@ -253,17 +253,18 @@ class AVLTreeList(object):
         elif i == self.length:
             new_parent = AVLTreeList.getMaxInsert(self.root)
             new_parent.setRight(new_node)
-            new_parent.setHeight(max(0, new_parent.getLeft().getHeight()) + 1)
+            #new_parent.setHeight(max(0, new_parent.getLeft().getHeight()) + 1)
 
         else:
-            new_parent = AVLTreeList.treeSelectInsert(self.root, i + 1)
+            new_parent = AVLTreeList.treeSelectInsert(self.root, i)
             if not new_parent.getLeft().isRealNode():
                 new_parent.setLeft(new_node)
-                new_parent.setHeight(max(0, new_parent.getRight().getHeight()) + 1)
+                #new_parent.setHeight(max(0, new_parent.getRight().getHeight()) + 1)
 
             else:
-                AVLTreeList.getPrev(new_parent).setRight(new_node)
-                new_parent.setHeight(max(0, new_parent.getLeft().getHeight()) + 1)
+                new_parent = AVLTreeList.getPrevInsert(new_parent)
+                new_parent.setRight(new_node)
+                #new_parent.setHeight(max(0, new_parent.getLeft().getHeight()) + 1)
 
         new_node.setParent(new_parent)
         AVLTreeList.fixHeight(new_parent)
@@ -358,13 +359,13 @@ class AVLTreeList(object):
 
     def listToArray(self):
         result = []
-        if self.length() == 0:
+        if self.length == 0:
             return result
 
         stack = []
         current = self.root
         while True:
-            if current.isRealNode:
+            if current.isRealNode():
                 stack.append(current)
                 current = current.getLeft()
 
@@ -588,12 +589,12 @@ class AVLTreeList(object):
         if rank == counter:
             return some_root
         elif rank < counter:
-            if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
-                some_root.setHeight(some_root.getHeight() + 1)
+            # if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
+            #     some_root.setHeight(some_root.getHeight() + 1)
             return AVLTreeList.treeSelectInsert(some_root.getLeft(), rank)
         else:
-            if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
-                some_root.setHeight(some_root.getHeight() + 1)
+            # if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
+            #     some_root.setHeight(some_root.getHeight() + 1)
             return AVLTreeList.treeSelectInsert(some_root.getRight(), rank - counter - 1)
 
     """returns the predecessor of a node in the tree
@@ -614,6 +615,28 @@ class AVLTreeList(object):
             if node.getParent() is None:
                 return None  # i.e. this node is the minimal node of the tree
         return node.getParent()
+
+    """returns the predecessor of a node in the tree and fixes height and sizes
+
+			@type node: AVLNode
+			@param node: node at rank i
+			@rtype: AVLNode
+			@returns: node at rank i - 1
+			"""
+
+    @staticmethod
+    def getPrevInsert(node):
+        if node.getLeft().isRealNode():
+            return AVLTreeList.getMaxInsert(node.getLeft())
+
+        while node == node.getParent().getLeft():
+            node.setSize(node.getSize()-1)
+            node = node.getParent()
+            
+        if node.getParent() is None:
+            return None  # i.e. this node is the minimal node of the tree
+        return node.getParent()
+
 
     """returns the successor of a node in the tree
 
@@ -715,6 +738,7 @@ class AVLTreeList(object):
 
     @staticmethod
     def fixHeight(node):
+        cnt = 0;
         currentNode = node;
         node.setHeight(max(node.getLeft().getHeight(), node.getRight().getHeight()) + 1)
         while (currentNode.getParent().isRealNode()):
@@ -722,7 +746,11 @@ class AVLTreeList(object):
             prevheight = currentNode.getHeight
             currentNode.setHeight(max(currentNode.getLeft().getHeight(), currentNode.getRight().getHeight()) + 1)
             if (prevheight == currentNode.getHeight()):
-                break
+                return cnt
+            cnt += 1
+        return cnt
+
+        
 
 
 
@@ -781,8 +809,12 @@ class AVLTreeList(object):
             child.setRight(node.getParent().getLeft())
             child.setParent(node.getParent())
             node.getParent().setLeft(child)
-            node.setSize(node.getRight().setSize() + node.getLeft().setSize())
-            child.setSize(node.getRight().setSize() + node.getLeft().setSize())
+            node.setSize(node.getRight().getSize() + node.getLeft().getSize() + 2)
+            child.setSize(node.getRight().getSize() + node.getLeft().getSize() + 2)
+            node.getParent().setSize(node.getParent().getRight().getSize() + node.getParent().getLeft().getSize() + 2)
+            child.setHeight(max(child.getLeft().getHeight(), child.getRight().getHeight()) + 1)
+            node.setHeight(max(node.getLeft().getHeight(), node.getRight().getHeight()) + 1)
+            AVLTreeList.fixHeight(node.getParent())
             return 2
 
         if bf == -2 and child_bf == 1:  # Right then left rotation
@@ -796,8 +828,12 @@ class AVLTreeList(object):
             child.setLeft(node.getParent().getRight())
             child.setParent(node.getParent())
             node.getParent().setRight(child)
-            node.setSize(node.getRight().setSize() + node.getLeft().setSize())
-            child.setSize(node.getRight().setSize() + node.getLeft().setSize())
+            node.setSize(node.getRight().getSize() + node.getLeft().getSize() + 2)
+            child.setSize(child.getRight().getSize() + child.getLeft().getSize() + 2)
+            node.getParent().setSize(node.getParent().getRight().getSize() + node.getParent().getLeft().getSize() + 2)
+            child.setHeight(max(child.getLeft().getHeight(), child.getRight().getHeight()) + 1)
+            node.setHeight(max(node.getLeft().getHeight(), node.getRight().getHeight()) + 1)
+            AVLTreeList.fixHeight(node.getParent())
             return 2
     
     
