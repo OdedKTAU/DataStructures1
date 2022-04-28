@@ -12,7 +12,9 @@
 
 
 
+from hashlib import new
 from ntpath import join
+from turtle import left, right
 
 
 class AVLNode(object):
@@ -409,23 +411,33 @@ class AVLTreeList(object):
 	"""
 
     def split(self, i):
-        split_node = AVLTreeList.treeSelect(self.root, i + 1)
-        larger_tree = AVLTreeList()
-        larger_tree.setRoot(split_node.getRight())
-        smaller_tree = AVLTreeList()
-        smaller_tree.setRoot(split_node.getLeft())
-        parent = split_node.getParent()
+        vars = AVLTreeList.treeSelectSplit(self.root, i)
+        leftL = vars[0]
+        rightL = vars[1]
+        snode = vars[2]
+        llst = AVLTreeList()
+        if leftL[len(leftL) - 1][0].isRealNode():
+            llst.setRoot( leftL[len(leftL) - 1][0])
+            llst.length = llst.root.getSize() + 1
+            for i in range(1,len(leftL)):
+                tlst = AVLTreeList()
+                tlst.setRoot(leftL[len(leftL) - i - 1][1])
+                tlst.length = tlst.getRoot() + 1
+                llst = AVLTreeList.join(tlst, llst, leftL[len(leftL) - i - 1][0])
+        
+        rlst = AVLTreeList()
+        if rightL[len(rightL) - 1][0].isRealNode():
+            rlst.setRoot( rightL[len(rightL) - 1][0])
+            rlst.length = rlst.root.getSize() + 1
+            for i in range(1,len(rightL)):
+                tlst = AVLTreeList()
+                tlst.setRoot(rightL[len(rightL) - i - 1][1])
+                tlst.length = tlst.getRoot() + 1
+                rlst = AVLTreeList.join(rlst, tlst, rightL[len(rightL) - i - 1][0])
 
-        while parent.isRealNode():
-            next_parent = parent.getParent()
-            # Detach parent from the tree
-            # Join it accordingly
-            parent = next_parent
 
-        self.setRoot(smaller_tree.root)
-        self.length = self.root.getSize()
 
-        return [self, split_node, larger_tree]
+        return [llst, snode, rlst]
 
     """concatenates lst to self
 
@@ -647,31 +659,41 @@ class AVLTreeList(object):
             return AVLTreeList.treeSelectInsert(some_root.getRight(), rank - counter - 1)
 
 
-    """returns a list [left, right, x] where x is the node at i'th index of the list (which is the node at rank i +1) , and right and left are lists of arrays 
-    of size 2 containing the nodes and corresponding trees in the right and left sides of a split of self at x respectively.
+    """returns a list containing the required methods for a split operation
 			@pre: 1 <= rank <= self.length()
 			@type some_root: AVLNode
 			@param some_root: the root to start the search from
 			@type rank: int
 			@param int: rank of desired node
-			@rtype: AVLNode
-			@returns: the node at the given rank
+			@rtype: List
+			@returns: a list [left, right, x] where x is the node at i'th index of the list (which is the node at rank i +1) , and right and left are lists of arrays 
+            of size 2 containing the nodes and corresponding trees in the right and left sides of a split of self at x respectively.
 			"""
 
     @staticmethod
     def treeSelectSplit(some_root, rank):
+
         counter = some_root.getLeft().getSize() + 1
-        
-        if rank == counter:
-            return some_root
-        elif rank < counter:
-            # if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
-            #     some_root.setHeight(some_root.getHeight() + 1)
-            return AVLTreeList.treeSelectSplit(some_root.getLeft(), rank)
-        else:
-            # if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
-            #     some_root.setHeight(some_root.getHeight() + 1)
-            return AVLTreeList.treeSelectInsert(some_root.getRight(), rank - counter - 1)
+        x = some_root
+        left = []
+        right = []
+        while True:
+            if rank == counter:
+                x = some_root
+                right.append([x.getRight()])
+                left.append([x.getLeft()])
+                break
+            elif rank < counter:
+                right.append([some_root, some_root.getRight()])
+                some_root = some_root.getLeft()
+                counter = some_root.getLeft().getSize() + 1
+            else:
+                left.append([some_root, some_root.getLeft()])
+                rank = rank - counter - 1
+                some_root = some_root.getRight()
+                counter = some_root.getLeft().getSize() + 1
+
+        return [left, right, x]
 
 
     @staticmethod
