@@ -11,7 +11,8 @@
 
 
 
-from lib2to3.pytree import Node
+
+from ntpath import join
 
 
 class AVLNode(object):
@@ -438,20 +439,37 @@ class AVLTreeList(object):
         original_height_diff = self.root.getHeight() - lst.root.getHeight()
         new_root = AVLTreeList.getMax(self.root)
         self.delete(self.length - 1)
-        new_height_diff = self.root.getHeight() - lst.root.getHeight()
+        self.join( lst, new_root)
+        return original_height_diff
 
-        if new_height_diff == 0:
+
+    """concatenates lst2 to lst1 with new_root between them
+
+	@type lst1: AVLTreeList
+	@param lst: a list to be concatenated after self
+    @type lst2: AVLTreeList
+	@param lst2: a list to be concatenated after self
+	@rtype: AVLTreeList
+	@returns: the absolute value of the difference between the height of the AVL trees joined
+	"""
+    
+    def join(self, lst2, new_root):
+        height_diff = self.root.getHeight() - lst2.root.getHeight()
+
+        if height_diff == 0:
             new_root.setLeft(self.root)
             self.root.setParent(new_root)
-            new_root.setRight(lst.root)
-            lst.root.setParent(new_root)
+            new_root.setRight(lst2.root)
+            new_root.setSize(self.length+lst2.length)
+            lst2.root.setParent(new_root)
             self.setRoot(new_root)
 
-        elif new_height_diff < 0:
+        elif height_diff < 0:
             left_height = self.root.getHeight()
-            start = lst.root
+            start = lst2.root
 
             while start.getHeight() > left_height:
+                start.setSize(start.getSize() + self.length + 1)
                 start = start.getLeft()
 
             new_root.setParent(start.getParent())
@@ -460,36 +478,39 @@ class AVLTreeList(object):
             start.setParent(new_root)
             new_root.setLeft(self.root)
             self.root.setParent(new_root)
+            new_root.setSize(new_root.getLeft().getSize()+new_root.getRight().getSize()+2)
             new_root.setHeight(self.root.getHeight() + 1)
 
-            AVLTreeList.fixtHeights(new_root.getParent())
+            #AVLTreeList.fixHeight(new_root)
             AVLTreeList.BalanceTreeFrom(self, new_root.getParent())
 
-            self.setRoot(lst.root)
-            lst.setRoot(None)
+            self.setRoot(lst2.root)
+            lst2.setRoot(None)
 
         else:
-            right_height = lst.root.getHeight()
+            right_height = lst2.root.getHeight()
             start = self.root
 
             while start.getHeight() > right_height:
+                start.setSize(start.getSize() + lst2.length + 1)
                 start = start.getRight()
 
             new_root.setParent(start.getParent())
             new_root.getParent().setRight(new_root)
             new_root.setLeft(start)
             start.setParent(new_root)
-            new_root.setRight(lst.root)
-            lst.root.setParent(new_root)
-            new_root.setHeight(lst.root.getHeight() + 1)
+            new_root.setRight(lst2.root)
+            lst2.root.setParent(new_root)
+            new_root.setSize(new_root.getLeft().getSize()+new_root.getRight().getSize()+2)
+            new_root.setHeight(lst2.root.getHeight() + 1)
 
-            AVLTreeList.fixHeights(new_root.getParent())
+            #AVLTreeList.fixHeight(new_root)
             AVLTreeList.BalanceTreeFrom(self, new_root.getParent())
 
-            lst.setRoot(None)
+            lst2.setRoot(None)
 
-        self.length += lst.length()
-        return original_height_diff
+        self.length = lst2.length + self.length + 1
+        return self
 
     """searches for a *value* in the list
 
@@ -620,6 +641,33 @@ class AVLTreeList(object):
             # if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
             #     some_root.setHeight(some_root.getHeight() + 1)
             return AVLTreeList.treeSelectInsert(some_root.getLeft(), rank)
+        else:
+            # if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
+            #     some_root.setHeight(some_root.getHeight() + 1)
+            return AVLTreeList.treeSelectInsert(some_root.getRight(), rank - counter - 1)
+
+
+    """returns a list [left, right, x] where x is the node at i'th index of the list (which is the node at rank i +1) , and right and left are lists of arrays 
+    of size 2 containing the nodes and corresponding trees in the right and left sides of a split of self at x respectively.
+			@pre: 1 <= rank <= self.length()
+			@type some_root: AVLNode
+			@param some_root: the root to start the search from
+			@type rank: int
+			@param int: rank of desired node
+			@rtype: AVLNode
+			@returns: the node at the given rank
+			"""
+
+    @staticmethod
+    def treeSelectSplit(some_root, rank):
+        counter = some_root.getLeft().getSize() + 1
+        
+        if rank == counter:
+            return some_root
+        elif rank < counter:
+            # if (some_root.getLeft().getHeight() >= some_root.getRight().getHeight()):
+            #     some_root.setHeight(some_root.getHeight() + 1)
+            return AVLTreeList.treeSelectSplit(some_root.getLeft(), rank)
         else:
             # if (some_root.getLeft().getHeight() <= some_root.getRight().getHeight()):
             #     some_root.setHeight(some_root.getHeight() + 1)

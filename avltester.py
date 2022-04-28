@@ -33,16 +33,47 @@ def chksize(lst):
 
 
 random.random()
-for i in range(6,71):
+for i in range(6,11):
+    r = int(random.random()*(i-1))
+    print(tlist.insert(r ,r))
+    # lst = tlist.listToArray()
+    # if (lst[r] != lst[r]):
+        #  print(" oi "+ str(i))
+    # print(str(r) + "- " + str(tlist.listToArray()))
+    #chksize(tlist.getRoot())
+# for i in range(1,1001):
+    # r = int(random.random()*(1000-i))
+    # print(tlist.delete(r))
+    # print(tlist.length)
+    # lst = tlist.listToArray()
+    # if (lst[r] != lst[r]):
+        #  print(" oi "+ str(i))
+    # print(str(r) + "- " + str(tlist.listToArray()))
+    # chksize(tlist.getRoot())
+
+lst2 = avl_skeleton.AVLTreeList()
+for i in range(0,21):
+    r = int(random.random()*(i))
+    print(lst2.insert(r ,r))
+print(tlist.listToArray())
+print()
+print(lst2.listToArray())
+print(tlist.concat(lst2))
+print(tlist.listToArray())
+# for i in range(6,1000):
+#     if (lst[i] <= lst[i-1]):
+#         print(" oi "+ str(i))
+print(tlist.listToArray())
+for i in range(30,1001):
     r = int(random.random()*(i-1))
     print(tlist.insert(r ,r))
     lst = tlist.listToArray()
     if (lst[r] != lst[r]):
          print(" oi "+ str(i))
     print(str(r) + "- " + str(tlist.listToArray()))
-    #chksize(tlist.getRoot())
-for i in range(1,71):
-    r = int(random.random()*(70-i))
+    chksize(tlist.getRoot())
+for i in range(1,1001):
+    r = int(random.random()*(1000-i))
     print(tlist.delete(r))
     print(tlist.length)
     lst = tlist.listToArray()
@@ -50,11 +81,5 @@ for i in range(1,71):
          print(" oi "+ str(i))
     print(str(r) + "- " + str(tlist.listToArray()))
     chksize(tlist.getRoot())
-
-lst = tlist.listToArray()
-# for i in range(6,1000):
-#     if (lst[i] <= lst[i-1]):
-#         print(" oi "+ str(i))
-print(tlist.listToArray())
 print("fin")
 
