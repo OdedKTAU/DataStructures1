@@ -1,4 +1,4 @@
-# username - odedkesler1
+# username - complete info
 # id1      - 200973212
 # name1    - Oded Kesler
 # id2      - complete info
@@ -778,27 +778,6 @@ class AVLTreeList(object):
             return AVLTreeList.treeSelectDel(some_root.getRight(), rank - counter - 1)
 
 
-    """returns the predecessor of a node in the tree
-    Deals with two cases, in which both are done in a single walk up or down the tree, O(log(n).
-
-			@type node: AVLNode
-			@param node: node at rank i
-			@rtype: AVLNode
-			@returns: node at rank i - 1
-			"""
-
-    @staticmethod
-    def getPrev(node):
-        if node.getLeft().isRealNode():
-            return AVLTreeList.getMax(node.getLeft())
-
-        while node == node.getParent().getLeft():
-            node = node.getParent()
-            if node.getParent() is None:
-                return None  # i.e. this node is the minimal node of the tree
-        return node.getParent()
-
-
     """returns the predecessor of a node in the tree and fixes height and sizes
     Deals with two cases, in which both are done in a single walk up or down the tree, O(log(n).
 
@@ -819,27 +798,6 @@ class AVLTreeList(object):
             
         if not node.getParent().isRealNode():
             return None  # i.e. this node is the minimal node of the tree
-        return node.getParent()
-
-
-    """returns the successor of a node in the tree
-    Deals with two cases, in which both are done in a single walk up or down the tree, O(log(n).
-
-				@type node: AVLNode
-				@param node: node at rank i
-				@rtype: AVLNode
-				@returns: node at rank i + 1
-				"""
-
-    @staticmethod
-    def getNext(node):
-        if node.getRight().isRealNode():
-            return AVLTreeList.getMin(node.getRight())
-
-        while node == node.getParent().getRight():
-            node = node.getParent()
-            if node.getParent() is None:
-                return None  # i.e. this node is the maximal node of the tree
         return node.getParent()
 
 
@@ -885,20 +843,6 @@ class AVLTreeList(object):
             node = parent
 
         return counter
-
-
-    """fix the heights of nodes up a tree
-    Operations are done in O(1) while walking up to the root, total of O(log(n)).
-
-					@type node: AVLNode
-					@param tree: the node to start the walk from
-					"""
-
-    @staticmethod
-    def adjustHeights(node):
-        while node.isRealNode():
-            node.setHeight(max(node.getRight().getHeight() + 1, node.getLeft().getHeight() + 1))
-            node = node.getParent()
 
 
     """Balance an AVL tree, after performing structural changes in it.
