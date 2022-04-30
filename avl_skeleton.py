@@ -14,6 +14,7 @@
 
 from hashlib import new
 from ntpath import join
+from tkinter.tix import TList
 from turtle import left, right
 
 
@@ -297,7 +298,6 @@ class AVLTreeList(object):
 
         # Deleted node has two children
         if relevant_node.getRight().isRealNode() and relevant_node.getLeft().isRealNode():
-            print("ping")
             # Get successor
             replacement = AVLTreeList.getMinDel(relevant_node.getRight())
             fix_from = replacement.getParent()
@@ -416,24 +416,33 @@ class AVLTreeList(object):
         rightL = vars[1]
         snode = vars[2]
         llst = AVLTreeList()
-        if leftL[len(leftL) - 1][0].isRealNode():
-            llst.setRoot( leftL[len(leftL) - 1][0])
-            llst.length = llst.root.getSize() + 1
-            for i in range(1,len(leftL)):
-                tlst = AVLTreeList()
-                tlst.setRoot(leftL[len(leftL) - i - 1][1])
-                tlst.length = tlst.getRoot() + 1
-                llst = AVLTreeList.join(tlst, llst, leftL[len(leftL) - i - 1][0])
+        #if leftL[len(leftL) - 1][0].isRealNode():
+        llst.setRoot( leftL[len(leftL) - 1][0])
+        llst.length = llst.root.getSize() + 1
+        llst.getRoot().setParent(AVLNode(""))
+        for i in range(1,len(leftL)):
+            tlst = AVLTreeList()
+            tlst.setRoot(leftL[len(leftL) - i - 1][1])
+            tlst.length = tlst.getRoot().getSize() + 1
+            tlst.getRoot().setParent(AVLNode(""))
+            nnode = leftL[len(leftL) - i - 1][0]
+            nnode.setLeaf()
+            llst = AVLTreeList.join(tlst, llst, nnode)
+        
         
         rlst = AVLTreeList()
-        if rightL[len(rightL) - 1][0].isRealNode():
-            rlst.setRoot( rightL[len(rightL) - 1][0])
-            rlst.length = rlst.root.getSize() + 1
-            for i in range(1,len(rightL)):
-                tlst = AVLTreeList()
-                tlst.setRoot(rightL[len(rightL) - i - 1][1])
-                tlst.length = tlst.getRoot() + 1
-                rlst = AVLTreeList.join(rlst, tlst, rightL[len(rightL) - i - 1][0])
+        #if rightL[len(rightL) - 1][0].isRealNode():
+        rlst.setRoot( rightL[len(rightL) - 1][0])
+        rlst.length = rlst.root.getSize() + 1
+        rlst.getRoot().setParent(AVLNode(""))
+        for i in range(1,len(rightL)):
+            tlst = AVLTreeList()
+            tlst.setRoot(rightL[len(rightL) - i - 1][1])
+            tlst.length = tlst.getRoot().getSize() + 1
+            tlst.getRoot().setParent(AVLNode(""))
+            nnode = rightL[len(rightL) - i - 1][0]
+            nnode.setLeaf
+            rlst = AVLTreeList.join(rlst, tlst, nnode)
 
 
 
@@ -467,13 +476,38 @@ class AVLTreeList(object):
     
     def join(self, lst2, new_root):
         height_diff = self.root.getHeight() - lst2.root.getHeight()
+        new_root.setLeaf()
+        if lst2.length == 0:
+            if self.length == 0:
+                self.setRoot(new_root)
+                self.length = 1
+                return self
+            parent = self.getMaxInsert(self.getRoot())
+            parent.setRight(new_root)
+            new_root.setParent(parent)
+            new_root.setSize(new_root.getRight().getSize() + new_root.getLeft().getSize() + 2)
+            self.length += 1
+            AVLTreeList.BalanceTreeFrom(self,parent)
+            return self
+        elif self.length == 0:
+            parent = AVLTreeList.treeSelectInsert(lst2.getRoot(), 0)
+            parent.setLeft(new_root)
+            new_root.setParent(parent)
+            lst2.length += 1
+            new_root.setSize(new_root.getRight().getSize() + new_root.getLeft().getSize() + 2)
+            AVLTreeList.BalanceTreeFrom(lst2, parent)
+            self = lst2
+            return self
+
 
         if height_diff == 0:
             new_root.setLeft(self.root)
             self.root.setParent(new_root)
             new_root.setRight(lst2.root)
-            new_root.setSize(self.length+lst2.length)
+            new_root.setSize(new_root.getRight().getSize() + new_root.getLeft().getSize() + 2)
+            
             lst2.root.setParent(new_root)
+            new_root.setHeight(max(new_root.getLeft().getHeight(), new_root.getRight().getHeight()) + 1)
             self.setRoot(new_root)
 
         elif height_diff < 0:
@@ -845,7 +879,10 @@ class AVLTreeList(object):
     def BalanceTreeFrom(tree_list, node):
         counter = 0
         while node.isRealNode():
+            prev = node.getHeight()
             node.setHeight(max(node.getLeft().getHeight(),node.getRight().getHeight()) + 1)
+            if prev != node.getHeight():
+                counter += 1
             balance_factor = node.getBalanceFactor()
 
             if balance_factor == -2:
