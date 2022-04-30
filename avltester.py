@@ -88,13 +88,19 @@ tlist2 = avl_skeleton.AVLTreeList()
 
 def chksize(lst):
     if not lst.isRealNode():
+        if -1 != lst.getSize():
+            print(" oi NotReal "+ str(lst.getValue()) + " " + str(lst.getSize()))
+        if -1 != lst.getHeight():
+            print(" oi NotReal "+ str(lst.getValue()) + " " + str(lst.getHeight()))
         return -1
     sz = chksize(lst.getRight())+chksize(lst.getLeft()) + 2
     hi = max(lst.getRight().getHeight(),lst.getLeft().getHeight()) + 1
     if sz != lst.getSize():
-        print(" oi "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()) + " " + str(lst.getSize() - sz))
+        print(" oi "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()) + " " + str(lst.getSize() - sz)+ " " + str(lst.getSize())+" " + str(sz))
     if hi != lst.getHeight():
         print(" vey "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()))
+    if (lst.getRight().getHeight() - lst.getLeft().getHeight()) not in [-1,0,1]:
+        print(" oof "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()) + " " + str(lst.getRight().getHeight() - lst.getLeft().getHeight()))
     return sz
 
 
@@ -107,6 +113,8 @@ r2 = int(random.random()*(20000))
 for i in range(0,r2):
     r = int(random.random()*(i-1))
     tlist2.insert(r ,r)
+print(tlist.listToArray())
+print("res-" + str(tlist.search(3)))
     # lst = tlist.listToArray()
     # if (lst[r] != lst[r]):
         #  print(" oi "+ str(i))
@@ -126,16 +134,19 @@ for i in range(0,r2):
 # # for i in range(0,21):
 # #     r = int(random.random()*(i))
 # #     print(lst2.insert(r ,r))
-tlist.concat(tlist2)
-chksize(tlist.getRoot())
-print(tlist.listToArray())
-r = int(random.random()*tlist.length)
-spl = tlist.split(r)
-print(str(spl[0].listToArray())+ " " + str(spl[2].listToArray()))
-t1 =  chksize(spl[0].getRoot())
-print("****")
-t2 = chksize(spl[2].getRoot())
-print(t1 - t2)
+
+# tlist.concat(tlist2)
+# chksize(tlist.getRoot())
+# print(tlist.listToArray())
+# r = int(random.random()*tlist.length)
+# spl = tlist.split(r)
+# print(str(spl[0].listToArray())+ " " + str(spl[2].listToArray()))
+# t1 =  chksize(spl[0].getRoot())
+# print("****")
+# t2 = chksize(spl[2].getRoot())
+# print(t1 - t2)
+
+
 # # print()
 # # print(lst2.listToArray())
 # # print(tlist.concat(lst2))

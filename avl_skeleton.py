@@ -823,15 +823,16 @@ class AVLTreeList(object):
     def inOrderSearch(node, value):
         if node.isRealNode():
 
-            if node.getValue() == value:
-                return AVLTreeList.treeRank(node) - 1
             v = AVLTreeList.inOrderSearch(node.getLeft(), value)
             if v >-1:
                 return v
+            if node.getValue() == value:
+                return  node.getLeft().getSize() + 1
 
 
-            
-            return AVLTreeList.inOrderSearch(node.getRight(), value)
+            v = AVLTreeList.inOrderSearch(node.getRight(), value)
+            if v >-1:
+                return v + node.getLeft().getSize() + 2
 
         return -1
 
