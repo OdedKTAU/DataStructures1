@@ -83,15 +83,16 @@ print(tlist.retrieve(2))
 print(tlist.insert(2,5))
 print(tlist.insert(3,6))
 print(tlist.retrieve(4))
+tlist2 = avl_skeleton.AVLTreeList()
 
 
 def chksize(lst):
     if not lst.isRealNode():
-        return lst.getSize()
+        return -1
     sz = chksize(lst.getRight())+chksize(lst.getLeft()) + 2
     hi = max(lst.getRight().getHeight(),lst.getLeft().getHeight()) + 1
     if sz != lst.getSize():
-        print(" oi "+ str(lst.getValue()))
+        print(" oi "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()) + " " + str(lst.getSize() - sz))
     if hi != lst.getHeight():
         print(" vey "+ str(tlist.treeRank(lst))+" "+ str(lst.getValue()))
     return sz
@@ -99,9 +100,13 @@ def chksize(lst):
 
 
 random.random()
-for i in range(6,1001):
+for i in range(6,10001):
     r = int(random.random()*(i-1))
     tlist.insert(r ,r)
+r2 = int(random.random()*(20000))
+for i in range(0,r2):
+    r = int(random.random()*(i-1))
+    tlist2.insert(r ,r)
     # lst = tlist.listToArray()
     # if (lst[r] != lst[r]):
         #  print(" oi "+ str(i))
@@ -121,10 +126,16 @@ for i in range(6,1001):
 # # for i in range(0,21):
 # #     r = int(random.random()*(i))
 # #     print(lst2.insert(r ,r))
+tlist.concat(tlist2)
+chksize(tlist.getRoot())
 print(tlist.listToArray())
 r = int(random.random()*tlist.length)
 spl = tlist.split(r)
 print(str(spl[0].listToArray())+ " " + str(spl[2].listToArray()))
+t1 =  chksize(spl[0].getRoot())
+print("****")
+t2 = chksize(spl[2].getRoot())
+print(t1 - t2)
 # # print()
 # # print(lst2.listToArray())
 # # print(tlist.concat(lst2))

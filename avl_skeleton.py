@@ -155,7 +155,9 @@ class AVLNode(object):
 
     def setLeaf(self):
         self.left = AVLNode("")
+        self.left.setParent(self)
         self.right = AVLNode("")
+        self.right.setParent(self)
         self.parent = AVLNode("")
         self.setHeight(0)
         self.setSize(0)
@@ -443,6 +445,7 @@ class AVLTreeList(object):
             nnode = rightL[len(rightL) - i - 1][0]
             nnode.setLeaf
             rlst = AVLTreeList.join(rlst, tlst, nnode)
+            print(str(rlst.listToArray()) + " t t")
 
 
 
