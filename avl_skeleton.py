@@ -12,10 +12,6 @@
 
 
 
-from hashlib import new
-from ntpath import join
-from tkinter.tix import TList
-from turtle import left, right
 
 
 class AVLNode(object):
@@ -417,11 +413,14 @@ class AVLTreeList(object):
         leftL = vars[0]
         rightL = vars[1]
         snode = vars[2]
+        mx = 0
+        av = 0
         llst = AVLTreeList()
         #if leftL[len(leftL) - 1][0].isRealNode():
         llst.setRoot( leftL[len(leftL) - 1][0])
         llst.length = llst.root.getSize() + 1
         llst.getRoot().setParent(AVLNode(""))
+        print(len(leftL) - 1)
         for i in range(1,len(leftL)):
             tlst = AVLTreeList()
             tlst.setRoot(leftL[len(leftL) - i - 1][1])
@@ -429,6 +428,12 @@ class AVLTreeList(object):
             tlst.getRoot().setParent(AVLNode(""))
             nnode = leftL[len(leftL) - i - 1][0]
             nnode.setLeaf()
+            tmp = llst.getRoot().getHeight() - tlst.getRoot().getHeight()
+            if (tmp<0):
+                tmp *= -1
+            if tmp > mx:
+                mx = tmp
+            av += tmp
             llst = AVLTreeList.join(tlst, llst, nnode)
         
         
@@ -437,19 +442,26 @@ class AVLTreeList(object):
         rlst.setRoot( rightL[len(rightL) - 1][0])
         rlst.length = rlst.root.getSize() + 1
         rlst.getRoot().setParent(AVLNode(""))
+        print(len(rightL) - 1)
         for i in range(1,len(rightL)):
             tlst = AVLTreeList()
             tlst.setRoot(rightL[len(rightL) - i - 1][1])
             tlst.length = tlst.getRoot().getSize() + 1
             tlst.getRoot().setParent(AVLNode(""))
             nnode = rightL[len(rightL) - i - 1][0]
-            nnode.setLeaf
+            nnode.setLeaf()
+            tmp = rlst.getRoot().getHeight() - tlst.getRoot().getHeight()
+            if (tmp<0):
+                tmp *= -1
+            if tmp > mx:
+                mx = tmp
+            av += tmp
             rlst = AVLTreeList.join(rlst, tlst, nnode)
-            print(str(rlst.listToArray()) + " t t")
+            # print(str(rlst.listToArray()) + " t t")
+        av = av / (len(leftL)+ len(rightL) - 2)
 
 
-
-        return [llst, snode, rlst]
+        return [llst, snode, rlst, mx, av]
 
     """concatenates lst to self
 

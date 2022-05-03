@@ -106,7 +106,7 @@ def chksize(lst):
 
 
 random.random()
-for i in range(6,10001):
+for i in range(6,20001):
     r = int(random.random()*(i-1))
     tlist.insert(r ,r)
 r2 = int(random.random()*(20000))
@@ -114,7 +114,7 @@ for i in range(0,r2):
     r = int(random.random()*(i-1))
     tlist2.insert(r ,r)
 print(tlist.listToArray())
-print("res-" + str(tlist.search(3)))
+print("res-" + str(tlist.search(10)))
     # lst = tlist.listToArray()
     # if (lst[r] != lst[r]):
         #  print(" oi "+ str(i))
@@ -130,21 +130,21 @@ print("res-" + str(tlist.search(3)))
 #     # print(str(r) + "- " + str(tlist.listToArray()))
 #     # chksize(tlist.getRoot())
 
-# # lst2 = avl_skeleton.AVLTreeList()
-# # for i in range(0,21):
-# #     r = int(random.random()*(i))
-# #     print(lst2.insert(r ,r))
+lst2 = avl_skeleton.AVLTreeList()
+for i in range(0,21):
+    r = int(random.random()*(i))
+    print(lst2.insert(r ,r))
 
-# tlist.concat(tlist2)
-# chksize(tlist.getRoot())
+tlist.concat(tlist2)
+chksize(tlist.getRoot())
 # print(tlist.listToArray())
-# r = int(random.random()*tlist.length)
-# spl = tlist.split(r)
+r = int(random.random()*tlist.length)
+spl = tlist.split(r)
 # print(str(spl[0].listToArray())+ " " + str(spl[2].listToArray()))
-# t1 =  chksize(spl[0].getRoot())
-# print("****")
-# t2 = chksize(spl[2].getRoot())
-# print(t1 - t2)
+t1 =  chksize(spl[0].getRoot())
+print("****")
+t2 = chksize(spl[2].getRoot())
+print(t1 - t2)
 
 
 # # print()
