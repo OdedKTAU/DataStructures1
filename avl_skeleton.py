@@ -1,8 +1,8 @@
-# username - complete info
+# username - nimrodc@mail.tau.ac.il
 # id1      - 200973212
 # name1    - Oded Kesler
-# id2      - complete info
-# name2    - complete info
+# id2      - 315427799
+# name2    - Nimrod Cohen
 
 
 """A class represnting a node in an AVL tree"""
